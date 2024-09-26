@@ -4,6 +4,7 @@ FROM node:18 AS build
 WORKDIR /src/main/angular
 
 # Add NPM Token from build arguments for private registry authentication
+# Was using this to build docker locally, will need to copy the .npmrc into docker. 
 # ARG NPM_TOKEN
 # ARG PRIVATE_REGISTRY_AUTH
 # RUN echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
