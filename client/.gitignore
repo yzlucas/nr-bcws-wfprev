@@ -7,7 +7,6 @@
 /bazel-out
 /target
 /wfprev-war/target
-/wfprev-ear/target
 
 # Node
 /node_modules

@@ -68,16 +68,19 @@ jobs:
           export NODE_OPTIONS="--max-old-space-size=4096"
           mvn --settings ${{ inputs.COMPONENT_TYPE }}/${{ inputs.COMPONENT_NAME }}/mvn_settings/settings.xml --batch-mode --update-snapshots -f ${{ inputs.COMPONENT_TYPE }}/${{ inputs.COMPONENT_NAME }}/pom.xml -Drepo.login=${{ secrets.IDIR_AS_EMAIL }} -Drepo.password=${{ secrets.IDIR_PASSWORD }} -DskipTests package
 
-      - name: Build UI with Maven
+      - name: Build UI with Node.js
         if: ${{ inputs.COMPONENT_TYPE == 'client' }}
         run: |
-          export MAVEN_OPTS="-Xmx3072m -XX:MaxMetaspaceSize=512m"
           export NODE_OPTIONS="--max-old-space-size=4096"
-          mvn --settings ${{ inputs.COMPONENT_TYPE }}/mvn_settings/settings.xml --batch-mode --update-snapshots -f ${{ inputs.COMPONENT_TYPE }}/pom.xml -Drepo.login=${{ secrets.IDIR_AS_EMAIL }} -Drepo.password=${{ secrets.IDIR_PASSWORD }} -DskipTests package
-       
+          cd client/wfprev-war/src/main/angular
+          npm install
+          npm run build -- --configuration production
       
-      - name: Copy files to neccessary folders
-        run: mkdir staging && cp ${{ inputs.COMPONENT_TYPE }}/${{ inputs.COMPONENT_NAME }}/target/*.war staging
+      - name: Copy files to necessary folders
+        run: |
+          mkdir -p staging
+          cp -r dist/wfprev/* staging/  # Copy the built Angular files to the staging directory
+        
       
       - uses: actions/upload-artifact@v3
         with:
@@ -87,10 +90,10 @@ jobs:
       - name: Cache local Maven repository
         uses: actions/cache@v2
         with:
-          path: staging
-          key: ${{ inputs.COMPONENT_NAME }}-maven-${{ hashFiles('**war.xml') }}
+          path: node_modules
+          key: ${{ inputs.COMPONENT_NAME }}-npm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ inputs.COMPONENT_NAME }}-maven-
+            ${{ inputs.COMPONENT_NAME }}-npm-
 
   docker:
     needs: build

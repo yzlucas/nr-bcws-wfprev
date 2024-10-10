@@ -8,7 +8,6 @@
 	<packaging>pom</packaging>
 	<name>wfprev-parent</name>
 	<modules>
-		<module>wfprev-ear</module>
 		<module>wfprev-war</module>
 	</modules>
 	<properties>
