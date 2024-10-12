@@ -403,5 +403,43 @@ resource "aws_ecs_service" "client" {
   # depends_on = [aws_iam_role_policy_attachment.wfprev_ecs_task_execution_role]
 }
 
+resource "aws_ecs_service" "nginx" {
+  name                              = "wfprev-nginx-service-${var.TARGET_ENV}"
+  cluster                           = aws_ecs_cluster.wfprev_main.id
+  task_definition                   = aws_ecs_task_definition.wfprev_nginx.arn
+  desired_count                     = var.APP_COUNT
+  enable_ecs_managed_tags           = true
+  propagate_tags                    = "TASK_DEFINITION"
+  health_check_grace_period_seconds = 60
+  wait_for_steady_state             = false
+
+
+  capacity_provider_strategy {
+    capacity_provider = "FARGATE_SPOT"
+    weight            = 80
+  }
+  capacity_provider_strategy {
+    capacity_provider = "FARGATE"
+    weight            = 20
+    base              = 1
+  }
+
+
+  network_configuration {
+    security_groups  = [aws_security_group.wfprev_ecs_tasks.id, data.aws_security_group.app.id]
+    subnets          = module.network.aws_subnet_ids.web.ids
+    assign_public_ip = true
+  }
+
+  #Hit http endpoint
+  load_balancer {
+    target_group_arn = aws_alb_target_group.wfprev_nginx.id
+    container_name   = var.nginx_container_name
+    container_port   = var.nginx_ports[0]
+  }
+
+  depends_on = [aws_iam_role_policy_attachment.wfprev_ecs_task_execution_role]
+}
+
 # Placeholder for other ECS Services like Nginx, Liquibase, etc.
 # Define similar ECS services for additional task definitions.

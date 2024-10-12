@@ -315,3 +315,9 @@ variable "COMMAND" {
   type = string
   default = "update"
 }
+
+variable "nginx_container_name" {
+  description = "Name of nginx container"
+  default     = "wfnews-nginx-app"
+  type        = string
+}
