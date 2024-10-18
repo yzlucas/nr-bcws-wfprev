@@ -30,7 +30,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Change directory to Angular app
-        run: cd client/wfprev-war/src/main/angular
+        run: cd client/wfprev-ui/src/main/angular
 
       # Use the NPMRC secret to set up npm authentication
       - name: Add .npmrc file
@@ -40,16 +40,16 @@ jobs:
       - run: npm cache clean --force
       - run: rm -rf node_modules
       - run: npm install
-        working-directory: client/wfprev-war/src/main/angular
+        working-directory: client/wfprev-ui/src/main/angular
 
       # Run unit tests and generate code coverage      
       - run: npm run test -- --watch=false --code-coverage
-        working-directory: client/wfprev-war/src/main/angular
+        working-directory: client/wfprev-ui/src/main/angular
 
       # Print coverage summary for debugging
       - name: Print coverage-summary.json
         run: cat coverage/wfprev/coverage-summary.json
-        working-directory: client/wfprev-war/src/main/angular
+        working-directory: client/wfprev-ui/src/main/angular
 
       # Ensure coverage meets the required threshold
       - name: Check code coverage
@@ -62,4 +62,4 @@ jobs:
             echo "Code coverage for statements is less than 80%! Exiting... ($statements_pct%)";
             exit 1;
           fi
-        working-directory: client/wfprev-war/src/main/angular
+        working-directory: client/wfprev-ui/src/main/angular

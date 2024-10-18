@@ -39,16 +39,16 @@ jobs:
         with:
           node-version: '20'         
           cache: 'yarn'
-          cache-dependency-path: './client/wfprev-war/src/main/angular/yarn.lock'
+          cache-dependency-path: './client/wfprev-ui/src/main/angular/yarn.lock'
      
       - name: Install dependencies and Angular CLI
-        working-directory: ./client/wfprev-war/src/main/angular
+        working-directory: ./client/wfprev-ui/src/main/angular
         run: |
           yarn install
           yarn global add @angular/cli
      
       - name: Run client tests with coverage
-        working-directory: ./client/wfprev-war/src/main/angular
+        working-directory: ./client/wfprev-ui/src/main/angular
         run: $(yarn global bin)/ng test --no-watch --code-coverage
      
       - name: Build, Test, and Analyze

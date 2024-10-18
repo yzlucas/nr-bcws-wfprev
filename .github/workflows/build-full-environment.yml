@@ -29,7 +29,7 @@ jobs:
     uses: ./.github/workflows/mvn-build.yml
     secrets: inherit
     with:
-      COMPONENT_NAME: wfprev-war
+      COMPONENT_NAME: wfprev-ui
       TAG: latest
       COMPONENT_TYPE: client
       

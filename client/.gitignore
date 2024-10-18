@@ -6,8 +6,7 @@
 /out-tsc
 /bazel-out
 /target
-/wfprev-war/target
-/wfprev-ear/target
+/wfprev-ui/target
 
 # Node
 /node_modules

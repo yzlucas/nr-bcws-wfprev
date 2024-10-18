@@ -70,17 +70,17 @@ jobs:
       - name: Install dependencies for Angular project
         if: ${{ inputs.COMPONENT_TYPE == 'client' }}
         run: |
-          cd ${{ inputs.COMPONENT_TYPE }}/wfprev-war/src/main/angular
+          cd ${{ inputs.COMPONENT_TYPE }}/wfprev-ui/src/main/angular
           npm install
       - name: Build Angular app
         if: ${{ inputs.COMPONENT_TYPE == 'client' }}
         run: |
-          cd ${{ inputs.COMPONENT_TYPE }}/wfprev-war/src/main/angular
+          cd ${{ inputs.COMPONENT_TYPE }}/wfprev-ui/src/main/angular
           npm run build -- --base-href="/pub/wfprev/"
   
       - name: Copy built files to necessary folders
         if: ${{ inputs.COMPONENT_TYPE == 'client' }}
-        run: mkdir -p staging && cp -r ${{ inputs.COMPONENT_TYPE }}/wfprev-war/src/main/angular/dist/wfprev/* staging/
+        run: mkdir -p staging && cp -r ${{ inputs.COMPONENT_TYPE }}/wfprev-ui/src/main/angular/dist/wfprev/* staging/
           
       - name: Build API with Maven
         if: ${{ inputs.COMPONENT_TYPE == 'server' }}

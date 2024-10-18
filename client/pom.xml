@@ -8,8 +8,7 @@
 	<packaging>pom</packaging>
 	<name>wfprev-parent</name>
 	<modules>
-		<module>wfprev-ear</module>
-		<module>wfprev-war</module>
+		<module>wfprev-ui</module>
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
