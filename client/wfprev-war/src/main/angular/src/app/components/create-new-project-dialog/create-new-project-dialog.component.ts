@@ -69,7 +69,7 @@ export class CreateNewProjectDialogComponent {
 
   getErrorMessage(controlName: string): string | null {
     const control = this.projectForm.get(controlName);
-    if (!control || !control.errors) return null;
+    if (!control?.errors) return null;
 
     if (control.hasError('required')) {
       return this.messages.requiredField;
