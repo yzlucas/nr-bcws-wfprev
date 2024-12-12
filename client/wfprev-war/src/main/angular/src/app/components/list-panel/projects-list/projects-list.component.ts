@@ -1,9 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ResourcesRoutes } from 'src/app/utils';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ProjectEventService } from 'src/app/services/shareservice';
+import { Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'app-projects-list',
@@ -12,11 +16,12 @@ import { ResourcesRoutes } from 'src/app/utils';
   templateUrl: './projects-list.component.html',
   styleUrls: ['./projects-list.component.scss'], // Corrected to 'styleUrls'
 })
-export class ProjectsListComponent {
-
+export class ProjectsListComponent implements OnInit {
   constructor(
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private http: HttpClient, // Inject HttpClient
+    private projectEventService: ProjectEventService
   ) {
   }
   
@@ -28,6 +33,8 @@ export class ProjectsListComponent {
   selectedSort = '';
   syncWithMap = false; 
   resultCount = 3; 
+
+  private subscription!: Subscription;
 
 
   // MOCK UP DATA TO MACTCH UP THE REAL DATA MODEL
@@ -127,6 +134,31 @@ export class ProjectsListComponent {
   fiscalYearActivityTypes = ['Clearing','Burning','Pruning']
   
 
+  ngOnInit(): void {
+    this.loadProjects(); // Correctly call the method
+    this.subscription = this.projectEventService.refreshProjects$.subscribe(() => {
+      console.log('Refreshing project list...');
+      this.loadProjects(); // Call the method again on event trigger
+    });
+  }
+
+  loadProjects(){
+    const token = '290702B1B4A4C08DE0630409228E8D7D';
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    
+    this.http
+      .get('http://localhost:8080/wfprev-api/projects', { headers }) // Use 'headers' instead of 'header'
+      .subscribe(
+        (response: any) => {
+          console.log('GET successful:', response);
+          this.projectList = response._embedded.project || [];
+          console.log(this.projectList)
+        },
+        (error) => {
+          console.error('GET failed:', error);
+        }
+      );
+  }
   onSortChange(event:any): void {
     this.selectedSort = event.target.value;
     console.log('Sort changed to:', this.selectedSort);
@@ -143,5 +175,4 @@ export class ProjectsListComponent {
       queryParams: { projectNumber: project.projectNumber, name: project.projectName}
     });
   }
-  
 }

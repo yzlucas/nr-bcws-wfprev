@@ -246,3 +246,7 @@
   position: absolute;
   left: 10px;
 }
+
+::ng-deep .mdc-snackbar__surface{
+  background-color: transparent !important;
+}

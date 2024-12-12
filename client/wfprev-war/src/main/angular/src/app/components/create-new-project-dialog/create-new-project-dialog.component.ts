@@ -5,6 +5,9 @@ import { MatDialog , MatDialogRef } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from 'src/app/components/confirmation-dialog/confirmation-dialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Messages } from 'src/app/utils/messages';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Project } from 'src/app/models/project.model';
+import { ProjectEventService } from 'src/app/services/shareservice';
 @Component({
   selector: 'app-create-new-project-dialog',
   standalone: true,
@@ -38,7 +41,8 @@ export class CreateNewProjectDialogComponent {
     private readonly dialog: MatDialog,
     private readonly dialogRef: MatDialogRef<CreateNewProjectDialogComponent>,
     private readonly snackbarService: MatSnackBar,
-
+    private http: HttpClient,
+    private projectEventService: ProjectEventService
   ) {
     this.projectForm = this.fb.group({
       projectName: ['', [Validators.required, Validators.maxLength(50)]],
@@ -86,28 +90,67 @@ export class CreateNewProjectDialogComponent {
 
   onCreate(): void {
     if (this.projectForm.valid) {
-      console.log(this.projectForm.value);
-      //call POST endpoint, 
-      // if return 500 error with duplicate project name error message, 
+      const projectData = new Project({
+        projectTypeCode: { projectTypeCode: 'FUEL_MGMT' },
+        projectNumber: undefined,
+        siteUnitName: 'Vancouver Forest Unit',
+        forestAreaCode: { forestAreaCode: 'WEST' },
+        generalScopeCode: { generalScopeCode: 'SL_ACT' },
+        programAreaGuid: '27602cd9-4b6e-9be0-e063-690a0a0afb50',
+        projectName: this.projectForm.get('projectName')?.value,
+        projectLead: this.projectForm.get('projectLead')?.value,
+        projectLeadEmailAddress: this.projectForm.get('projectLeadEmail')?.value,
+        projectDescription: 'This is a comprehensive forest management project focusing on sustainable practices',
+        closestCommunityName: this.projectForm.get('closestCommunity')?.value,
+        totalFundingRequestAmount: 100000.0,
+        totalAllocatedAmount: 95000.0,
+        totalPlannedProjectSizeHa: 500.0,
+        totalPlannedCostPerHectare: 200.0,
+        totalActualAmount: 0.0,
+        isMultiFiscalYearProj: false,
+        forestRegionOrgUnitId: 1001,
+        forestDistrictOrgUnitId: 2001,
+        fireCentreOrgUnitId: 3001,
+        bcParksRegionOrgUnitId: 4001,
+        bcParksSectionOrgUnitId: 5001,
+      });
+      console.log('Form data:', this.projectForm.value);
 
-      // this.dialog.open(ConfirmationDialogComponent, {
-      //   data: {
-      //     indicator: 'duplicate-project',
-      //     projectName: '',
-      //   },
-      //   width: '500px',
-      // });
+      // Prepare headers with Bearer token
+      const token = '290702B1B4A4C08DE0630409228E8D7D'; // Replace with your actual token
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-      //OK will return the user to the Modal and allow further editing. just close the Modal for now
-      this.snackbarService.open(
-        this.messages.projectCreatedSuccess,
-        'OK',
-        { duration: 100000, panelClass: 'snackbar-success' },
-      )
-      this.dialogRef.close(this.projectForm.value);
+      // API endpoint URL
+      const url = 'http://localhost:8080/wfprev-api/projects'; // Replace with your actual endpoint
+
+      // Send POST request to create a new project
+      this.http.post(url, projectData, { headers }).subscribe(
+        (response: any) => {
+          console.log('Project created successfully:', response);
+          // Show success message
+          this.snackbarService.open(
+            this.messages.projectCreatedSuccess,
+            'OK',
+            { duration: 10000, panelClass: 'snackbar-success' }
+          );
+          this.projectEventService.triggerRefreshProjects(); // Emit the event
+
+          // Close the dialog and pass the response data if needed
+          this.dialogRef.close(true);
+        },
+        (error: any) => {
+          console.error('Error creating project:', error);
+          // Check if the error is due to a duplicate project name
+            // Handle other errors
+            this.snackbarService.open(
+              'An error occurred while creating the project. Please try again.',
+              'OK',
+              { duration: 10000, panelClass: 'snackbar-error' }
+            );
+          }
+      );
     }
   }
-
   onCancel(): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: {
