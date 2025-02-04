@@ -143,7 +143,6 @@ export class ProjectFiscalsComponent implements OnInit, CanComponentDeactivate  
       projectPlanFiscalGuid: [fiscal?.projectPlanFiscalGuid || ''],
       isApprovedInd: [fiscal?.isApprovedInd || false]
     });
-    
     return form;
     
   }
