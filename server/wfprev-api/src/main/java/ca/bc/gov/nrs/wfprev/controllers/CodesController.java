@@ -151,6 +151,7 @@ public class CodesController extends CommonController {
             case CodeTables.FUNDING_SOURCE_CODE -> codesService.getFundingSourceCodeById(id);
             case CodeTables.SOURCE_OBJECT_NAME_CODE -> codesService.getSourceObjectNameCodeById(id);
             case CodeTables.ATTACHMENT_CONTENT_TYPE_CODE -> codesService.getAttachmentContentTypeCodeById(id);
+            case CodeTables.SILVICULTURE_BASE -> codesService.getSilvicultureBaseById(id);
             default -> null;
         };
     }

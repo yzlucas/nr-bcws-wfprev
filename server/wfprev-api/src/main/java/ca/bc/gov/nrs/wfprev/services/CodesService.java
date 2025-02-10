@@ -55,6 +55,8 @@ public class CodesService implements CommonService {
     private final SourceObjectNameCodeRepository sourceObjectNameCodeRepository;
     private final AttachmentContentTypeCodeResourceAssembler attachmentContentTypeCodeResourceAssembler;
     private final AttachmentContentTypeCodeRepository attachmentContentTypeCodeRepository;
+    private final SilvicultureBaseResourceAssembler silvicultureBaseResourceAssembler;
+    private final SilvicultureBaseRepository silvicultureBaseRepository;
 
     public CodesService(ForestAreaCodeRepository forestAreaCodeRepository, ForestAreaCodeResourceAssembler forestAreaCodeResourceAssembler,
                         GeneralScopeCodeRepository generalScopeCodeRepository, GeneralScopeCodeResourceAssembler generalScopeCodeResourceAssembler,
@@ -68,7 +70,7 @@ public class CodesService implements CommonService {
                         PlanFiscalStatusCodeResourceAssembler planFiscalStatusCodeResourceAssembler, PlanFiscalStatusCodeRepository planFiscalStatusCodeRepository,
                         AncillaryFundingSourceCodeResourceAssembler ancillaryFundingSourceCodeResourceAssembler, AncillaryFundingSourceCodeRepository ancillaryFundingSourceCodeRepository,
                         FundingSourceCodeResourceAssembler fundingSourceCodeResourceAssembler, FundingSourceCodeRepository fundingSourceCodeRepository, SourceObjectNameCodeResourceAssembler sourceObjectNameCodeResourceAssembler, SourceObjectNameCodeRepository sourceObjectNameCodeRepository,
-                        AttachmentContentTypeCodeResourceAssembler attachmentContentTypeCodeResourceAssembler, AttachmentContentTypeCodeRepository attachmentContentTypeCodeRepository) {
+                        AttachmentContentTypeCodeResourceAssembler attachmentContentTypeCodeResourceAssembler, AttachmentContentTypeCodeRepository attachmentContentTypeCodeRepository, SilvicultureBaseResourceAssembler silvicultureBaseResourceAssembler, SilvicultureBaseRepository silvicultureBaseRepository) {
         this.forestAreaCodeRepository = forestAreaCodeRepository;
         this.forestAreaCodeResourceAssembler = forestAreaCodeResourceAssembler;
         this.generalScopeCodeRepository = generalScopeCodeRepository;
@@ -105,6 +107,8 @@ public class CodesService implements CommonService {
         this.sourceObjectNameCodeResourceAssembler = sourceObjectNameCodeResourceAssembler;
         this.attachmentContentTypeCodeResourceAssembler = attachmentContentTypeCodeResourceAssembler;
         this.attachmentContentTypeCodeRepository = attachmentContentTypeCodeRepository;
+        this.silvicultureBaseResourceAssembler = silvicultureBaseResourceAssembler;
+        this.silvicultureBaseRepository = silvicultureBaseRepository;
     }
 
     /**
@@ -438,6 +442,25 @@ public class CodesService implements CommonService {
         try {
             List<AttachmentContentTypeCodeEntity> entities = attachmentContentTypeCodeRepository.findAll();
             return attachmentContentTypeCodeResourceAssembler.toCollectionModel(entities);
+        } catch (Exception e) {
+            throw new ServiceException(e.getLocalizedMessage(), e);
+        }
+    }
+
+    public AttachmentContentTypeCodeModel getAttachmentContentTypeCodeById(String id) throws ServiceException {
+        try {
+            return attachmentContentTypeCodeRepository.findById(id)
+                    .map(attachmentContentTypeCodeResourceAssembler::toModel)
+                    .orElse(null);
+        } catch (Exception e) {
+            throw new ServiceException(e.getLocalizedMessage(), e);
+        }
+    }
+
+    public CollectionModel<SilvicultureBaseModel> getAllSilvicultureBaseModel() throws ServiceException {
+        try {
+            List<SilvicultureBaseEntity> entities = silvicultureBaseRepository.findAll();
+            return silvicultureBaseResourceAssembler.toCollectionModel(entities);
         } catch (Exception e) {
             throw new ServiceException(e.getLocalizedMessage(), e);
         }
