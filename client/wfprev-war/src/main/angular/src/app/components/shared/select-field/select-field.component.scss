@@ -1,0 +1,23 @@
+.form-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+label {
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: #282828;
+}
+select {
+  font-size: 14px;
+  padding: 8px 12px;
+  border: none;
+  border-bottom: 1px solid #282828;
+  outline: none;
+  background: #fff;
+  color: #282828;
+}
+.required {
+  color: #EF1616;
+  margin-left: 2px;
+} 

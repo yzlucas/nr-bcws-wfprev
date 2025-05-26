@@ -13,6 +13,7 @@ import {
 } from 'src/app/utils/tools';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatTooltipModule  } from '@angular/material/tooltip';
+import { SelectFieldModule } from '../shared/select-field/select-field.module';
 @Component({
   selector: 'app-create-new-project-dialog',
   standalone: true,
@@ -20,7 +21,8 @@ import { MatTooltipModule  } from '@angular/material/tooltip';
     ReactiveFormsModule,
     CommonModule,
     TextFieldModule,
-    MatTooltipModule 
+    MatTooltipModule,
+    SelectFieldModule
   ],
   templateUrl: './create-new-project-dialog.component.html',
   styleUrls: ['./create-new-project-dialog.component.scss']
@@ -381,5 +383,52 @@ export class CreateNewProjectDialogComponent implements OnInit {
     return objective?.description ?? value;
   }
   
- 
+  get projectTypeOptions() {
+    return this.projectTypes.map(type => ({
+      value: type.projectTypeCode,
+      label: type.description
+    }));
+  }
+  get businessAreaOptions() {
+    return this.businessAreas.map(area => ({
+      value: area.programAreaGuid,
+      label: area.programAreaName
+    }));
+  }
+  get forestRegionOptions() {
+    return this.forestRegions.map(region => ({
+      value: region.orgUnitId,
+      label: region.orgUnitName
+    }));
+  }
+  get forestDistrictOptions() {
+    return this.forestDistricts.map(district => ({
+      value: district.orgUnitId,
+      label: district.orgUnitName
+    }));
+  }
+  get bcParksRegionOptions() {
+    return this.bcParksRegions.map(region => ({
+      value: region.orgUnitId,
+      label: region.orgUnitName
+    }));
+  }
+  get bcParksSectionOptions() {
+    return this.bcParksSections.map(section => ({
+      value: section.orgUnitId,
+      label: section.orgUnitName
+    }));
+  }
+  get fireCentreOptions() {
+    return this.fireCentres.map(item => ({
+      value: item?.properties?.MOF_FIRE_CENTRE_ID,
+      label: item?.properties?.MOF_FIRE_CENTRE_NAME
+    }));
+  }
+  get objectiveTypeOptions() {
+    return this.objectiveTypes.map(type => ({
+      value: type.objectiveTypeCode,
+      label: type.description
+    }));
+  }
 }

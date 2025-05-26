@@ -1,0 +1,7 @@
+<div class="form-item">
+  <label [for]="id">{{ label }}<span *ngIf="required" class="required">*</span></label>
+  <select [formControl]="control" [id]="id">
+    <option value="" disabled selected hidden>{{ placeholder }}</option>
+    <option *ngFor="let option of options" [value]="option.value">{{ option.label }}</option>
+  </select>
+</div> 
