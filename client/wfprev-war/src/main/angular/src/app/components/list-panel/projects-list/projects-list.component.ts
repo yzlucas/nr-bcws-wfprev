@@ -506,6 +506,9 @@ export class ProjectsListComponent implements OnInit {
   }
   showPopupForProject(project: any) {
     if (!project?.latitude || !project?.longitude) return;
+
+    this.sharedService.updateSelectedProject(project);
+
     const map = this.getActiveMap()?.$viewer?.map;
     if (!map) return;
 
@@ -522,5 +525,6 @@ export class ProjectsListComponent implements OnInit {
       map.setView(targetMarker.getLatLng(), 15);
     }
   }
+
 
 }

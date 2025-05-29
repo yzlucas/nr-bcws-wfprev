@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-project-popup',
@@ -11,6 +11,7 @@ import { Component, Input } from '@angular/core';
 export class ProjectPopupComponent {
   @Input() project: any;
   @Input() map!: L.Map;
+  @Output() closed = new EventEmitter<void>();
   formatCurrency(val: number | undefined): string {
     return val != null ? `$${val.toLocaleString()}` : 'N/A';
   }
@@ -21,9 +22,7 @@ export class ProjectPopupComponent {
     }
   }
   closePopup(): void {
-    if (this.map) {
-      this.map.closePopup(); 
-    }
+    this.closed.emit();
   }
 
 }

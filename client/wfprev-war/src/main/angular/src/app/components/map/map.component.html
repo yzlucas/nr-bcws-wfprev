@@ -11,6 +11,13 @@
 
     <!-- Map content -->
     <div class="map-content">
+        <app-project-popup
+          *ngIf="selectedProject"
+          [project]="selectedProject"
+          [map]="mapService.getSMKInstance()?.$viewer?.map"
+          (closed)="selectedProject = null"
+          class="floating-popup">
+        </app-project-popup>
       <div #mapContainer id="map"></div>
     </div>
   </div>

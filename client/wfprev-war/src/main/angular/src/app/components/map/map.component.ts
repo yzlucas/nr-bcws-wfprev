@@ -9,11 +9,12 @@ import { SharedService } from 'src/app/services/shared-service';
 import * as L from 'leaflet';
 import { ProjectPopupComponent } from 'src/app/components/project-popup/project-popup.component';
 import { createComponent, EnvironmentInjector, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [ResizablePanelComponent, SearchFilterComponent, ProjectPopupComponent],
+  imports: [ResizablePanelComponent, SearchFilterComponent, ProjectPopupComponent, CommonModule],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss'
 })
@@ -37,15 +38,22 @@ export class MapComponent implements AfterViewInit, OnDestroy  {
   private latestProjects: any[] = [];
   private hasClusterBeenAddedToMap = false;
   private markersClusterGroup: L.MarkerClusterGroup | null = null;
+  selectedProject: any = null;
 
   constructor(
     protected cdr: ChangeDetectorRef,
-    private readonly mapService: MapService,
+    readonly mapService: MapService,
     private readonly mapConfigService: MapConfigService,
     private readonly route: ActivatedRoute,
     private readonly sharedService: SharedService,
     private readonly injector: EnvironmentInjector
   ) {}
+
+  ngOnInit() {
+    this.sharedService.selectedProject$.subscribe(project => {
+      this.selectedProject = project;
+    });
+  }
 
   ngOnDestroy(): void {
     const smk = this.mapService.getSMKInstance();
@@ -134,7 +142,7 @@ ngAfterViewInit(): void {
     const map = smk?.$viewer?.map;
 
     if (!map || !this.markersClusterGroup) {
-      console.warn('[Map] Skipping updateMarkers — map or cluster group not ready');
+      console.warn('Map Skipping updateMarkers — map or cluster group not ready');
       return;
     }
 
@@ -157,25 +165,19 @@ ngAfterViewInit(): void {
             })
           });
 
-          const popupDiv = document.createElement('div');
-          const cmpRef = createComponent(ProjectPopupComponent, {
-            environmentInjector: this.injector
+          marker.on('click', () => {
+            this.selectedProject = project;
           });
-          cmpRef.instance.project = project;
-          cmpRef.instance.map = map;
-          cmpRef.hostView.detectChanges();
-          popupDiv.appendChild(cmpRef.location.nativeElement);
 
-          marker.bindPopup(popupDiv, {
-            maxWidth: 486,
-            minWidth: 0,
-            autoPan: true,
-          });
           this.markersClusterGroup!.addLayer(marker);
         } catch (err) {
           console.error('Map Failed to add marker:', project, err);
         }
       });
+  }
+
+  openProjectDialog(project: any) {
+    this.selectedProject = project;
   }
 
 }
