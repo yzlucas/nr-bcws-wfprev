@@ -9,6 +9,15 @@ export class SharedService {
   private readonly displayedProjectsSource = new BehaviorSubject<any[]>([]);
   displayedProjects$ = this.displayedProjectsSource.asObservable();
 
+<<<<<<< Updated upstream
+=======
+  private readonly selectedProjectSubject = new Subject<any>();
+  selectedProject$ = this.selectedProjectSubject.asObservable();
+
+  private readonly _mapCommand$ = new Subject<{ action: 'open' | 'close', project: Project }>();
+  mapCommand$ = this._mapCommand$.asObservable();
+
+>>>>>>> Stashed changes
   updateFilters(filters: any) {
     this.filtersSource.next(filters);
   }

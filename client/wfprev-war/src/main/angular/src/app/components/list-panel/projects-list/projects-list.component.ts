@@ -503,5 +503,36 @@ export class ProjectsListComponent implements OnInit {
     if (!project?.projectFiscals?.length) return [];
     return [...project.projectFiscals].sort((a, b) => b.fiscalYear - a.fiscalYear);
   }
+<<<<<<< Updated upstream
   
+=======
+
+  onHeaderClick(event: MouseEvent, project: any): void {
+    const clickedInsideChevron = (event.target as HTMLElement).closest('.custom-indicator');
+    if (!clickedInsideChevron) {
+      event.stopPropagation();
+      this.onListItemClick(project);
+    }
+  }
+
+
+  togglePanel(guid: string, event: MouseEvent): void {
+    event.stopPropagation();
+    this.expandedPanels[guid] = !this.expandedPanels[guid];
+  }
+
+
+  onListItemClick(project: any): void {
+    if (this.selectedProjectGuid === project.projectGuid) {
+          //deselect
+      this.selectedProjectGuid = null;
+      this.sharedService.selectProject();
+      this.sharedService.triggerMapCommand('close', project);
+    } else {
+        // select
+      this.selectedProjectGuid = project.projectGuid;
+      this.sharedService.selectProject(project);
+    }
+  }
+>>>>>>> Stashed changes
 }

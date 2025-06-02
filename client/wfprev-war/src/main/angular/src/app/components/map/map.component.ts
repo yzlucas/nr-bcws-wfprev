@@ -159,5 +159,83 @@ ngAfterViewInit(): void {
           console.error('[Map] Failed to add marker:', project, err);
         }
       });
+<<<<<<< Updated upstream
+=======
+      
+  }
+
+  openPopupForProject(project: Project): void {
+    if (
+      project?.latitude == null ||
+      project?.longitude == null ||
+      !this.markersClusterGroup
+    ) {
+      return;
+    }
+
+    const smk = this.mapService.getSMKInstance();
+    const map = smk?.$viewer?.map;
+    if (!map) return;
+
+    const targetMarker = this.markersClusterGroup
+      .getLayers()
+      .find((layer): layer is L.Marker => {
+        return (
+          layer instanceof L.Marker &&
+          Math.abs(layer.getLatLng().lat - project.latitude!) < 0.0001 &&
+          Math.abs(layer.getLatLng().lng - project.longitude!) < 0.0001
+        );
+      });
+
+    if (targetMarker) {
+      // Reset previous active marker icon
+      if (this.activeMarker && this.activeMarker !== targetMarker) {
+        this.activeMarker.setIcon(
+          L.icon({
+            iconUrl: '/assets/blue-pin-drop.svg',
+            iconSize: [30, 50],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+          })
+        );
+      }
+
+      // Set active icon for selected marker
+      targetMarker.setIcon(
+        L.icon({
+          iconUrl: '/assets/active-pin-drop.svg',
+          iconSize: [50, 70],
+          iconAnchor: [20, 51],
+          popupAnchor: [1, -34],
+        })
+      );
+
+      this.activeMarker = targetMarker;
+
+      this.markersClusterGroup.zoomToShowLayer(targetMarker, () => {
+        targetMarker.openPopup();
+
+        targetMarker.off('popupclose'); 
+
+        targetMarker.on('popupclose', () => {
+          targetMarker.setIcon(
+            L.icon({
+              iconUrl: '/assets/blue-pin-drop.svg',
+              iconSize: [30, 50],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+            })
+          );
+
+          if (this.selectedProject?.projectGuid === project.projectGuid) {
+            this.sharedService.selectProject();
+          }
+        });
+        requestAnimationFrame(() => {
+          map.invalidateSize();
+        });
+      });
+    }
+>>>>>>> Stashed changes
   }
 }
