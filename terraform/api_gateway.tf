@@ -73,9 +73,7 @@ resource "aws_apigatewayv2_deployment" "wfprev_deployment" {
   triggers = {
     redeployment = sha1(join(",",tolist([
       jsonencode(aws_apigatewayv2_stage.wfprev_stage),
-      jsonencode(aws_apigatewayv2_integration.wfprev_vpc_integration),
       jsonencode(aws_apigatewayv2_route.base_route),
-      jsonencode(aws_apigatewayv2_integration.wfprev_vpc_integration),
       jsonencode(aws_apigatewayv2_vpc_link.wfprev_vpc_link)
     ])))
   }
