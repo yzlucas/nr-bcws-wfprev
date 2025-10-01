@@ -67,7 +67,7 @@ export class ActivitiesComponent implements OnChanges, CanComponentDeactivate {
   @Input() fiscalGuid: string = '';
   @Output() boundariesUpdated = new EventEmitter<void>();
   @ViewChild('activitiesPanel') activitiesPanel?: MatExpansionPanel;
-  @ViewChildren(ProjectFilesComponent) private attachmentFiles!: QueryList<ProjectFilesComponent>;
+  @ViewChildren(ProjectFilesComponent) private readonly attachmentFiles!: QueryList<ProjectFilesComponent>;
   messages = Messages;
   isNewActivityBeingAdded = false;
 
