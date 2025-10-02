@@ -100,13 +100,6 @@ class FeaturesServiceTest {
         mockProject.setProjectGuid(UUID.randomUUID());
         List<ProjectEntity> mockProjects = Collections.singletonList(mockProject);
 
-        when(entityManager.getCriteriaBuilder()).thenReturn(criteriaBuilder);
-
-        @SuppressWarnings("unchecked")
-        CriteriaQuery<Long> countQuery = mock(CriteriaQuery.class);
-        when(criteriaBuilder.createQuery(Long.class)).thenReturn(countQuery);
-        when(countQuery.from(ProjectEntity.class)).thenReturn(projectRoot);
-
         FeaturesService spyService = spy(featuresService);
         doReturn(1L).when(spyService).countFilteredProjects(params);
         doReturn(mockProjects).when(spyService).findFilteredProjects(params, 1, 20);
@@ -222,6 +215,8 @@ class FeaturesServiceTest {
 
         when(criteriaBuilder.createQuery(ProjectEntity.class)).thenReturn(projectQuery);
         when(projectQuery.from(ProjectEntity.class)).thenReturn(projectRoot);
+        when(projectQuery.select(any())).thenReturn(projectQuery);
+        when(projectQuery.distinct(true)).thenReturn(projectQuery);
 
         TypedQuery<ProjectEntity> mockQuery = mock(TypedQuery.class);
         when(entityManager.createQuery(projectQuery)).thenReturn(mockQuery);
